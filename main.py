@@ -41,6 +41,16 @@ def main():
             print(ocr_text)
             result = db.get_user_details(ocr_text)
             print("Result"+result)
+        placeholder.write("")
+        image_holder.empty()
+        if result:
+            st.write(f"Recognized License plate number : {result[2]}")
+            html_content = render_html_temp(result)
+            st.markdown(html_content, unsafe_allow_html=True)
+            st.download_button(label="Download PDF", data=generate_pdf(html_content), file_name=f"License_details_{result[2]}.pdf")
+
+        else:
+            st.write("No information found for this License plate")
 
 
 if __name__ == "main":

@@ -1,2 +1,3 @@
 class UserDatabase:
-    pass
+    def add_license_details(self):
+        pass

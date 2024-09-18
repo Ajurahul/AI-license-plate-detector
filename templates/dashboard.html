@@ -73,6 +73,9 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+        .user-details-container {
+            margin-top: 20px;
+        }
         .user-details {
             display: flex;
             flex-direction: column;
@@ -93,11 +96,13 @@
         .user-details p strong {
             color: #007bff;
         }
-        .download-btn {
+        .button-group {
+            display: flex;
+            gap: 10px; /* Space between buttons */
             margin-top: 20px;
         }
-        .download-btn button {
-            background-color: #28a745;
+        .button-group button {
+            background-color: #28a745; /* Same background color */
             border: none;
             color: white;
             padding: 0.8rem 1.2rem;
@@ -105,8 +110,8 @@
             font-size: 1rem;
             cursor: pointer;
         }
-        .download-btn button:hover {
-            background-color: #218838;
+        .button-group button:hover {
+            background-color: #218838; /* Same hover color */
         }
         .no-result {
             margin-top: 20px;
@@ -114,6 +119,8 @@
             color: #dc3545;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -135,6 +142,7 @@
 
         <!-- If result is available, display the details -->
         {% if result %}
+        <div class="user-details-container">
             <h2>Recognized License Plate Details</h2>
 
             <div class="user-details">
@@ -156,17 +164,58 @@
                     <p><strong>Phone No:</strong> {{ result[7] }}</p>
                 </div>
             </div>
+</div>
+            <!-- Buttons to download PDF and JPG -->
+            <div class="button-group">
+                <!-- Button to download PDF -->
+                <button id="downloadPDF">Download PDF</button>
 
-            <!-- Button to download PDF -->
-            <div class="download-btn">
-                <form action="{{ url_for('download_pdf', license_no=result[2]) }}" method="GET">
-                    <button type="submit">Download PDF</button>
-                </form>
+                <!-- Button to download JPG -->
+                <button id="downloadJPG">Download as Image</button>
             </div>
+
+
         {% elif no_result %}
             <!-- Show this message only if no result was found after upload -->
             <p class="no-result">No details found for this license plate. Please upload another image.</p>
         {% endif %}
     </div>
+
+    <script>
+        document.getElementById('downloadJPG').addEventListener('click', function() {
+            html2canvas(document.querySelector('.user-details-container')).then(function(canvas) {
+                var link = document.createElement('a');
+                link.href = canvas.toDataURL('image/jpeg');
+                link.download = 'details.jpg';
+                link.click();
+            });
+        });
+
+        document.getElementById('downloadPDF').addEventListener('click', function() {
+            html2canvas(document.querySelector('.user-details-container')).then(function(canvas) {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+                const imgData = canvas.toDataURL('image/jpeg');
+                const imgWidth = 190; // PDF page width in mm
+                const pageHeight = 295; // PDF page height in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+
+                let position = 0;
+
+                pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save('license_details.pdf');
+            });
+        });
+    </script>
 </body>
 </html>

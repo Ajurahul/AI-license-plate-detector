@@ -8,18 +8,19 @@ from UserDatabase import UserDatabase
 import os
 from io import BytesIO
 from flask_caching import Cache
+from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
-
+app.permanent_session_lifetime = timedelta(minutes=30)
 # Configure cache
 app.config['CACHE_TYPE'] = 'simple'
-app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Cache timeout in seconds
+app.config['CACHE_DEFAULT_TIMEOUT'] = 6000  # Cache timeout in seconds
 cache = Cache(app)
 
 
 # Initialize the cache for the OCR model
-@cache.cached(timeout=3600, key_prefix='ocr_model')
+@cache.cached(timeout=6000, key_prefix='ocr_model')
 def load_model():
     processor = LicenseOCR()
     user_db = UserDatabase('license_plate_db.sqlite')
@@ -39,7 +40,7 @@ def render_html_template(details):
     with open("templates/template.html") as file:
         print("Started loading temp")
         template = Template(file.read())
-        print("Started debug temp")
+        # print("Started debug temp")
         return template.render(
             license_no=details[2],
             owner_name=details[3],
@@ -136,7 +137,7 @@ def dashboard():
 @app.route('/download_pdf/<license_no>')
 def download_pdf(license_no):
     result = db.get_user_details(license_no)
-    print(result)
+    # print(result)
     if result:
         html_content = render_html_template(result)
         pdf = generate_pdf(html_content)

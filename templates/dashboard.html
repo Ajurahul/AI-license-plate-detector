@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            background-image: url('{{ url_for("static", filename="car_plate.png") }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .logout-btn button {
+            background-color: #dc3545;
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .logout-btn button:hover {
+            background-color: #c82333;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            margin: 20px 0;
+            width: 100%;
+            max-width: 500px;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #555;
+        }
+        input[type="file"] {
+            margin-bottom: 1rem;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .user-details img {
+            max-width: 200px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .user-details p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: #333;
+        }
+        .user-details p strong {
+            color: #007bff;
+        }
+        .download-btn {
+            margin-top: 20px;
+        }
+        .download-btn button {
+            background-color: #28a745;
+            border: none;
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .download-btn button:hover {
+            background-color: #218838;
+        }
+        .no-result {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logout Button on Top Right -->
+        <div class="logout-btn">
+            <form action="{{ url_for('logout') }}" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+
+        <h1>Vehicle Number OCR and Query System</h1>
+
+        <!-- Form to upload another image -->
+        <form method="POST" enctype="multipart/form-data">
+            <label for="file">Upload License Plate Image:</label>
+            <input type="file" name="file" id="file" accept="image/*">
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- If result is available, display the details -->
+        {% if result %}
+            <h2>Recognized License Plate Details</h2>
+
+            <div class="user-details">
+                <!-- Display User's Image (either as URL or Base64 encoded) -->
+                {% if result[8].startswith('http') %}
+                    <!-- If it's a URL -->
+                    <img src="{{ result[8] }}" alt="User Image">
+                {% else %}
+                    <!-- If it's Base64 encoded -->
+                    <img src="{{ result[8] }}" alt="User Image">
+                {% endif %}
+
+                <div>
+                    <p><strong>License Number:</strong> {{ result[2] }}</p>
+                    <p><strong>Owner Name:</strong> {{ result[3] }}</p>
+                    <p><strong>Vehicle Model:</strong> {{ result[4] }}</p>
+                    <p><strong>Registration Date:</strong> {{ result[5] }}</p>
+                    <p><strong>Address:</strong> {{ result[6] }}</p>
+                    <p><strong>Phone No:</strong> {{ result[7] }}</p>
+                </div>
+            </div>
+
+            <!-- Button to download PDF -->
+            <div class="download-btn">
+                <form action="{{ url_for('download_pdf', license_no=result[2]) }}" method="GET">
+                    <button type="submit">Download PDF</button>
+                </form>
+            </div>
+        {% elif no_result %}
+            <!-- Show this message only if no result was found after upload -->
+            <p class="no-result">No details found for this license plate. Please upload another image.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

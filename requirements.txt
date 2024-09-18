@@ -3,3 +3,6 @@ torch
 transformers
 jinja2
 xhtml2pdf
+bcrypt
+flask
+Flask-Caching

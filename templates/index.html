@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+body {
+ background-image: url('{{ url_for("static", filename="car_plate.png") }}');
+       background-size: cover;
+      background-repeat: no-repeat;
+      margin: 0;
+      padding: 0;
+}
+        .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+
+      color: #333;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007BFF;
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+      margin: 10px;
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+</style>
+</head>
+
+<body>
+
+    <h1>Welcome to Vehicle Number OCR System</h1>
+          <a href="{{ url_for('login') }}" class="btn"><i class="fa fa-home"></i> Login</a>
+      <a href="{{ url_for('register') }}" class="btn"><i class="fa fa-user-plus"></i> Register</a>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+
+    <style>
+        body {
+            background-image: url('{{ url_for("static", filename="car_plate.png") }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            position: relative; /* For positioning close button */
+        }
+        .container h1 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin: 0.5rem 0;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .form-group input {
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .container button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .container button:hover {
+            background-color: #0056b3;
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 0.9rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .flash-message.success {
+            background-color: #28a745; /* Green for success */
+        }
+        .flash-message.danger {
+            background-color: #dc3545; /* Red for danger */
+        }
+        .flash-message .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .flash-message .close-btn:hover {
+            /* No color change on hover */
+        }
+        .container p {
+            margin-top: 1rem;
+        }
+        .container p a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .container p a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+        {% with message = get_flashed_messages(with_categories=true) %}
+        {% if message %}
+            <div class="flash-message {{ message[0][0] }}">
+                {{ message[0][1] }}
+<!--                <button class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>-->
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <p><a href="{{ url_for('login') }}">Already have an account? Login here</a></p>
+    </div>
+ <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(msg) {
+                setTimeout(function() {
+                    msg.style.opacity = '0';
+                    setTimeout(function() {
+                        msg.style.display = 'none';
+                    }, 500);
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -16,6 +16,7 @@ def show_image(url):
     return img
 
 
+
 class LicenseOCR:
     def __init__(self):
         print("Initialized")

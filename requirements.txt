@@ -6,3 +6,6 @@ xhtml2pdf
 bcrypt
 flask
 Flask-Caching
+Pillow
+captcha
+cryptography
